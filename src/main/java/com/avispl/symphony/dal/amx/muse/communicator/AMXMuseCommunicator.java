@@ -92,11 +92,6 @@ public class AMXMuseCommunicator extends SocketCommunicator implements Monitorab
     }
 
     @Override
-    protected byte[] send(byte[] data) throws Exception {
-        return super.send(data);
-    }
-
-    @Override
     public List<Statistics> getMultipleStatistics() throws Exception {
         ExtendedStatistics extendedStatistics = new ExtendedStatistics();
         Map<String, String> statistics = new HashMap<>();

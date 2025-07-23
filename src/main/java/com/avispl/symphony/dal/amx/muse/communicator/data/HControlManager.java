@@ -8,8 +8,6 @@ import com.avispl.symphony.api.dal.dto.control.AdvancedControllableProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.avispl.symphony.dal.util.ControllablePropertyFactory.createSwitch;
-
 /**
  * This class is responsible for storing and generating HControl commands
  *
