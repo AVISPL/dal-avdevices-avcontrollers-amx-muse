@@ -111,30 +111,32 @@ public class AMXMuseCommunicator extends SocketCommunicator implements Monitorab
         boolean ntpEnabled = "true".equals(extractResponseValue(send(Constant.Command.NTP_ENABLE.getBytes())));
         statistics.put(Constant.Property.NTP, ntpEnabled ? "Enabled" : "Disabled");
 
-        statistics.put(Constant.Property.REBOOT, "");
+        statistics.put(Constant.Property.REBOOT, "N/A");
         controls.add(createButton(Constant.Property.REBOOT, Constant.Property.REBOOT, "Rebooting...", 120000L));
-//        for (int i = 1; i <= 10; i++) {
-//            disconnect();
-//            super.send(new byte[]{'\n'});
-//            if ("true".equals(statistics.get("NTP"))) {
-//                statistics.put(String.format("NTPServer[%s]#Host", i), extractResponseValue(send(String.format(Constant.Command.NTP_SERVER_HOST, i).getBytes())));
-//                statistics.put(String.format("NTPServer[%s]#KeyID", i), extractResponseValue(send(String.format(Constant.Command.NTP_SERVER_KEYID, i).getBytes())));
-//
-//                statistics.put(String.format("NTPKeyseq[%s]#KeyID", i), extractResponseValue(send(String.format(Constant.Command.NTP_KEYSEQ_KEYID, i).getBytes())));
-//                statistics.put(String.format("NTPKeyseq[%s]#Encryption", i), extractResponseValue(send(String.format(Constant.Command.NTP_KEYSEQ_ENCRYPTION, i).getBytes())));
-//            }
-//            if (i <= 2) {
-//                statistics.put(String.format("NetworkInterface[%s]#MACAddress", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_MAC, i).getBytes())));
-//                statistics.put(String.format("NetworkInterface[%s]#Gateway", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_GATEWAY, i).getBytes())));
-//                statistics.put(String.format("NetworkInterface[%s]#IPAddress", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_IP_ADDRESS, i).getBytes())));
-//                statistics.put(String.format("NetworkInterface[%s]#DHCP", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_DHCP, i).getBytes())));
+/**TODO: this code is temporarily commented out, for the future releases:
+        for (int i = 1; i <= 10; i++) {
+            disconnect();
+            super.send(new byte[]{'\n'});
+            if ("true".equals(statistics.get("NTP"))) {
+                statistics.put(String.format("NTPServer[%s]#Host", i), extractResponseValue(send(String.format(Constant.Command.NTP_SERVER_HOST, i).getBytes())));
+                statistics.put(String.format("NTPServer[%s]#KeyID", i), extractResponseValue(send(String.format(Constant.Command.NTP_SERVER_KEYID, i).getBytes())));
 
-//                for (int j = 1; j <= 3; j++) {
-//                    statistics.put(String.format("NetworkInterface[%s]#DNSServer[s]", i, j), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_DNS_SERVER, i, j).getBytes())));
-//                }
-//                statistics.put(String.format("NetworkInterface[%s]#SubnetMask", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_SUBNET_MASK, i).getBytes())));
-//            }
-//        }
+                statistics.put(String.format("NTPKeyseq[%s]#KeyID", i), extractResponseValue(send(String.format(Constant.Command.NTP_KEYSEQ_KEYID, i).getBytes())));
+                statistics.put(String.format("NTPKeyseq[%s]#Encryption", i), extractResponseValue(send(String.format(Constant.Command.NTP_KEYSEQ_ENCRYPTION, i).getBytes())));
+            }
+            if (i <= 2) {
+                statistics.put(String.format("NetworkInterface[%s]#MACAddress", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_MAC, i).getBytes())));
+                statistics.put(String.format("NetworkInterface[%s]#Gateway", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_GATEWAY, i).getBytes())));
+                statistics.put(String.format("NetworkInterface[%s]#IPAddress", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_IP_ADDRESS, i).getBytes())));
+                statistics.put(String.format("NetworkInterface[%s]#DHCP", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_DHCP, i).getBytes())));
+
+                for (int j = 1; j <= 3; j++) {
+                    statistics.put(String.format("NetworkInterface[%s]#DNSServer[s]", i, j), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_DNS_SERVER, i, j).getBytes())));
+                }
+                statistics.put(String.format("NetworkInterface[%s]#SubnetMask", i), extractResponseValue(send(String.format(Constant.Command.NETWORK_INTERFACE_SUBNET_MASK, i).getBytes())));
+            }
+        }
+**/
         disconnect();
         extendedStatistics.setStatistics(statistics);
         extendedStatistics.setControllableProperties(controls);
@@ -153,7 +155,7 @@ public class AMXMuseCommunicator extends SocketCommunicator implements Monitorab
     private String extractResponseValue(byte[] response) throws Exception {
         String strResponse = new String(response);
         if (!strResponse.contains("{") || !strResponse.contains("}")) {
-            throw new RuntimeException();
+            throw new RuntimeException("Unable to retrieve HControl property: Invalid json value received.");
         }
         String jsonResponse = strResponse.substring(strResponse.indexOf("{")-1);
         JsonNode responseObject = objectMapper.readTree(jsonResponse);
